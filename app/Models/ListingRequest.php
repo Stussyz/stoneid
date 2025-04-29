@@ -16,8 +16,6 @@ class ListingRequest extends Model
         'property_type',
         'description',
         'price',
-        'address',
-        'location',
         'transaction_type',
         'status',
     ];
@@ -34,6 +32,7 @@ class ListingRequest extends Model
     }
     public function address()
     {
-        return $this->belongsTo(Address::class);
+        return $this->morphOne(Address::class, 'addressable');
     }
+
 }

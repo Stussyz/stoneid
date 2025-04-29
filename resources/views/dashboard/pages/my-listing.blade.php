@@ -8,7 +8,7 @@
  <main class="container main-content pt-3">
     <div class="row px-2 py-3">
         <h3>Listing Saya</h3>
-        <p>107 Total Listing</p>
+        <p>{{ $properties->count() }} Total Listing</p>
         <section class="bg-white mb-5">
             <div class="container mt-3">
                  {{-- Displaying success/error messsages --}}
@@ -69,8 +69,6 @@
                             </div>
                         </div>
                         </div>
-                     <h5 class="text-muted">Menampilkan {{ $properties->count() }} Properti Anda</h5>
-                     
                 </header>
                 <!-- end search and filter -->
 

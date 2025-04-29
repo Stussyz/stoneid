@@ -130,7 +130,6 @@ class AgentListingController extends Controller
                 $listingRequest = ListingRequest::find($validated['listing_request_id']);
                 $userProfile    = $listingRequest->userProfile;
             }
-
             // Create the property
             $property = $agentProfile->properties()->create([
                 'name'             => $validated['title'],

@@ -8,16 +8,14 @@
  <main class="container-fluid header bg-white p-0">
     <form method="post" action="{{ route('stone.profile-update') }}" enctype="multipart/form-data">
         @csrf
-    <div class="row g-0">
-        <h1 class="ms-5 margin-top-setting">
-            <a href="{{ route('stone.user-profile') }}">
-                <i class="fas fa-chevron-left me-5">
-                </i>
-            </a>
-            Edit Profil
-        </h1>
-
-        
+        <div class="row g-0">
+            <h1 class="ms-5 margin-top-setting">
+                <a href="{{ route('stone.user-profile') }}">
+                    <i class="fas fa-chevron-left me-5">
+                    </i>
+                </a>
+                Edit Profil
+            </h1>
             <div class="col-md-6 px-5">
                 <div class="row g-0 gx-5 mt-0 mt-lg-5">
                     <div class="col-md-4 d-flex align-items-center justify-content-center ">

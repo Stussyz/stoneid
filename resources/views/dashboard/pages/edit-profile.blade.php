@@ -65,18 +65,7 @@
                                 <input type="file" id="modalFileInput" accept="image/*" hidden>
                                 <img id="modalPreviewImage" src="{{ asset('storage/images/agents/' . $profile->photo) }}" class="rounded-circle mt-2">
                             </div>
-                            {{-- <fieldset class="upload_dropZone text-center mb-3 p-4">
-                                <legend class="visually-hidden">Image uploader</legend>
-                                    <i class="fas fa-cloud-upload-alt fa-4x"></i>
-                                
-                                    <p class="small my-2">Drag &amp; Drop Foto Profil Anda Disini<br><i>atau</i></p>
-                                
-                                    <input id="upload_image_background" data-post-name="image_background" data-post-url="https://someplace.com/image/uploads/backgrounds/" class="position-absolute invisible" type="file" multiple accept="image/jpeg, image/png, image/svg+xml" />
-                                
-                                    <label class="btn btn-primary mb-3" for="upload_image_background">Choose file(s)</label>
-                                
-                                    <div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
-                            </fieldset> --}}
+                           
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -104,45 +93,102 @@
                 <input type="email"  name="email" class="form-control" id="email" aria-describedby="email" value="{{ $user->email }}" required >
             </div>
             <h5 class="mt-5 mb-3">Data Alamat Anda</h5>
-            <div class="row">
+             {{-- addresses --}}
+             <div class="row">
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label for="inputEmail" class="form-label">Alamat <sup class="text-danger">*</sup> </label>
-                        <input type="text" name="street" value="" class="form-control" id="inputEmail" placeholder="Alamat lengkap anda">
+                        <label for="alamat" class="form-label">Alamat <sup class="text-danger">*</sup> </label>
+                        <input 
+                        type="text" 
+                        value="{{ old('address[street]', $profile->address->street ?? '') }}" name="address[street]" class="form-control" 
+                        id="alamat" 
+                        placeholder="Alamat properti anda">
+                        @error('address[street]')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div> 
+                    <div class="mb-3">
+                        <label for="city" class="form-label">Kota / Kabupaten <sup class="text-danger">*</sup> </label>
+                        <select 
+                        id="kota" 
+                        class="form-select" 
+                        value="{{ old('address[city]', $profile->address->city ?? '') }}" 
+                        name="address[city]" 
+                        aria-label="Default select example"
+                        placeholder="Kota/Kabupaten" 
+                        disabled>
+                            <option selected value="Kota">Kota</option>
+                        </select>
+                        @error('address[city]')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                        
                     </div>
                     <div class="mb-3">
-                        <label for="inputCity" class="form-label">Kota / Kabupaten <sup class="text-danger">*</sup> </label>
-                        <select disabled class="form-select" id="kota" name="city" aria-label="Default select example" id="inputCity">
-                            <option selected value="">Kota</option>
+                        <label for="kelurahan" class="form-label">Kelurahan <sup class="text-danger">*</sup> </label>
+                        <select 
+                        class="form-select" 
+                        value="{{ old('address[village]', 
+                        $property->address->village ?? '') }}" 
+                        name="address[village]" 
+                        id="kelurahan" 
+                        aria-label="Default select example"
+                        placeholder="Keurahan" 
+                        disabled >
+                            <option selected value="Kelurahan">Kelurahan</option>
                         </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputVillage" class="form-label">Kelurahan <sup class="text-danger">*</sup> </label>
-                        <select disabled class="form-select" id="kelurahan" name="village" aria-label="Default select example" id="inputVillage">
-                            <option selected value="">Kelurahan</option>
-                        </select>
+                        @error('address[village]')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                     
                 </div>
                 <div class="col-lg-6">
                     <div class="mb-3">
-                        <label for="inputProvince" class="form-label">Provinsi <sup class="text-danger">*</sup> </label>
-                        <select  class="form-select" id="provinsi" name="province" aria-label="Default select example" id="inputProvince">
-                            <option selected value="">Provinsi</option>
+                        <label for="provinsi" class="form-label">Provinsi <sup class="text-danger">*</sup> </label>
+                        <select 
+                        class="form-select" 
+                        value="{{ old('address[province]', $profile->address->province ?? '') }}" 
+                        name="address[province]" 
+                        id="provinsi"
+                        placeholder="Provinsi" 
+                        aria-label="Default select example" >
+                            <option selected value="Provinsi">Provinsi</option>
                         </select>
-                    </div> 
-                   
-                    <div class="mb-3">
-                        <label for="inputDistrict" class="form-label">Kecamatan <sup class="text-danger">*</sup> </label>
-                        <select disabled class="form-select" id="kecamatan" name="district" aria-label="Default select example" id="inputDistrict">
-                            <option selected value="">Kecamatan</option>
-                        </select>
+                        @error('address[province]')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                     
-
+                    <div class="mb-3">
+                        <label for="kecamatan" class="form-label">Kecamatan <sup class="text-danger">*</sup> </label>
+                        <select 
+                        class="form-select" 
+                        value="{{ old('address[district]', $profile->address->district ?? '') }}" 
+                        name="address[district]" 
+                        id="kecamatan" 
+                        placeholder="Kecamatan"
+                        aria-label="Default select example" 
+                        disabled>
+                            <option selected value="Kecamatan">Kecamatan</option>
+                        </select>
+                        @error('address[district]')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
                     <div class="mb-3">
                         <label for="inputPostalCode" class="form-label">Kode Pos</label>
-                        <input type="number" name="postal_code" class="form-control" maxlength="6" id="inputPostalCode" placeholder="Isikan Kode pos" value="127822">
+                        <input 
+                        type="number" 
+                        value="{{ old('address[postal_code]', $profile->address->postal_code ?? '') }}" 
+                        name="address[postal_code]" 
+                        class="form-control" 
+                        maxlength="6" 
+                        id="inputPostalCode" 
+                        placeholder="Isikan Kode pos properti">
+                        @error('address[postal_code]')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
             </div>

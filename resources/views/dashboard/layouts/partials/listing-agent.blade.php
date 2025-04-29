@@ -1,29 +1,31 @@
+<h5 class="text-muted my-3">Menampilkan {{ $properties->count() }} Properti Anda</h5>
 @forelse($properties as $property)
-@php
-    $photo = optional(optional(optional($property->listingRequest)->user)->userProfile)->photo;
-    $address = $property->address;
-    $addressDisplay = $address->district . ', ' . $address->city;
-    $mainImage = $property->propertyImages->where('order', 1)->first();
-    $listingReq = $property->listingRequest ?? null;
-        
-    $transaction = $property->transactions;
-    $step = $transaction->current_step ;
-    $showStep = '';
+    @php
+        $photo = optional(optional(optional($property->listingRequest)->user)->userProfile)->photo;
+        $address = $property->address;
+        $addressDisplay = $address->district . ', ' . $address->city;
+        $mainImage = $property->propertyImages->where('order', 1)->first();
+        $listingReq = $property->listingRequest ?? null;
+            
+        $transaction = $property->transactions;
+        $step = $transaction->current_step ;
+        $showStep = '';
 
-    //previewstep
-    foreach($steps as $key => $previewStep){
-        if($key === $step){
-            $showStep = $previewStep;
+        //previewstep
+        foreach($steps as $key => $previewStep){
+            if($key === $step){
+                $showStep = $previewStep;
+            }
         }
-    }
 
-    
-
-    //check the property is rent / sale
-    $sale = $property->transaction_type === 'Dijual';
-    // $rent = $property->transaction_type === 'Disewa';
         
-@endphp
+
+        //check the property is rent / sale
+        $sale = $property->transaction_type === 'Dijual';
+        // $rent = $property->transaction_type === 'Disewa';
+            
+    @endphp
+   
     <!-- verified one -->
     <div class="row gx-2 p-1 my-3 justify-content-center border rounded">
         <div class="col-xl-5 col-lg-5 col-md-12 position-relative">

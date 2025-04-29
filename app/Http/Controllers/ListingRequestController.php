@@ -2,8 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ListingRequest;
+use App\Notifications\ListingRequestAccepted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ListingRequestController extends Controller
 {
@@ -23,16 +25,22 @@ class ListingRequestController extends Controller
     //Store a newly created listing request
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'property_title'      => 'required|string|max:255',
+            'description'         => 'required|string',
+            'price'               => 'required|numeric',
+            'property_type'       => 'required',
+            'transaction_type'    => 'required',
 
-        $request->validate([
-            'property_title'   => 'required|string|max:255',
-            'description'      => 'required|string',
-            'price'            => 'required|numeric',
-            'location'         => 'required|string|max:255',
-            'property_title'   => 'required|string',
-            'property_type'    => 'required',
-            'transaction_type' => 'required',
+            //address
+            'address.street'      => 'required|string|max:255',
+            'address.village'     => 'required|string|max:255',
+            'address.district'    => 'required|string|max:255',
+            'address.city'        => 'required|string|max:255',
+            'address.province'    => 'required|string|max:255',
+            'address.postal_code' => 'required|string|max:20',
         ]);
+
         $filename = '';
         $user     = Auth::user();
         $profile  = $user->profile;
@@ -46,21 +54,28 @@ class ListingRequestController extends Controller
             // $path           = $request->file('photo')->storeAs('public', $filename);
 
             //this is only for development
-            $request->file('photo')->move(storage_path('app/public/images/users'), $filename);
-            $profile->photo = $filename; // Save file name in DB
+            $request->file('photo')->move(storage_path('app/public/images/listing_request'), $filename);
+
         }
 
-        $listingRequest = ListingRequest::create([
-            'user_id'          => auth()->id(),
+        $listingRequest = $user->listingRequests()->create([
             'photo'            => $filename,
             'property_title'   => $request->property_title,
             'property_type'    => $request->property_type,
-            'address'          => $request->address,
-            'location'         => $request->listing_location,
+
             'transaction_type' => $request->transaction_type,
             'description'      => $request->description,
             'price'            => $request->price,
             'status'           => 'pending',
+        ]);
+
+        $listingRequest->address()->create([
+            'street'      => $validated['address']['street'],
+            'village'     => $validated['address']['village'],
+            'district'    => $validated['address']['district'],
+            'city'        => $validated['address']['city'],
+            'province'    => $validated['address']['province'],
+            'postal_code' => $validated['address']['postal_code'],
         ]);
 
         return redirect()->route('stone.user-profile')->with('success', 'Request Iklan kepada Agen Berhasil Dibuat!');
@@ -71,18 +86,15 @@ class ListingRequestController extends Controller
         //get login agent
         $user    = Auth::user();
         $profile = $user->agentProfile;
-        // $selectedLocation = $request->input('location');
-        $selectedLocation = $user->agentProfile->address;
 
-        $listingRequests = ListingRequest::query()
-            ->whereHas('user.profile', function ($query) use ($user, $selectedLocation) {
-                if ($selectedLocation) {
-                    $query->where('location', $selectedLocation);
-                } else {
-                    $query->where('location', $user->agentProfile->address);
-                }
-            })
-            ->with(['user.profile']) // eager load user + profile
+        //get city of agent
+        $selectedLocation = optional($profile->address)->city;
+
+        // Fetch listing requests where listing address city matches agent city
+        $listingRequests = ListingRequest::whereHas('address', function ($query) use ($selectedLocation) {
+            $query->where('city', $selectedLocation);
+        })
+            ->with('address', 'user.profile')
             ->latest()
             ->get();
 
@@ -114,26 +126,34 @@ class ListingRequestController extends Controller
     //     return redirect()->route('listing_requests.index')->with('success', 'Listing request updated successfully.');
     // }
 
-    // // Delete a listing request
-    // public function destroy(ListingRequest $listingRequest)
-    // {
-    //     $listingRequest->delete();
-    //     return redirect()->route('listing_requests.index')->with('success', 'Listing request deleted successfully.');
-    // }
+    // Delete a listing request
+    public function destroy($id)
+    {
+        $listingRequest = ListingRequest::findOrFail($id);
 
-    // // Agent accepts a listing request
-    // public function accept(ListingRequest $listingRequest)
-    // {
-    //     $listingRequest->update([
-    //         'agent_id' => auth()->id(),
-    //         'status'   => 'accepted',
-    //     ]);
+        if ($listingRequest->photo) {
+            Storage::disk('public')->delete('images/listing_request/' . $listingRequest->photo);
+        }
+        // Then delete the database record
+        $listingRequest->delete();
+        return redirect()->route('stone.user-profile')->with('success', 'Listing request deleted successfully.');
+    }
 
-    //     // Notify the user (seller) about the acceptance
-    //     // Notification logic here
+    // Agent accepts a listing request
+    public function accept(ListingRequest $listingRequest)
+    {
 
-    //     return redirect()->route('listing_requests.index')->with('success', 'Listing request accepted successfully.');
-    // }
+        $listingRequest->update([
+            'agent_id' => auth()->id(),
+            'status'   => 'accepted',
+        ]);
+
+        // Notify the user (seller) about the acceptance
+        $user = $listingRequest->userProfile->user;
+        $user->notify(new ListingRequestAccepted($listingRequest));
+
+        return redirect()->route('dashboard-agent.pool-user')->with('success', 'Permintaan Iklan telah diterima!');
+    }
 
     // // User marks the listing as ready
     // public function markAsReady(ListingRequest $listingRequest)

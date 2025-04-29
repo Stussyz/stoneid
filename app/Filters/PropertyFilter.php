@@ -17,7 +17,6 @@ class PropertyFilter
         if ($request->filled('type')) {
             $query->where('transaction_type', $request->type);
         }
-
         switch ($request->sort) {
             case 'oldest':
                 $query->oldest();
@@ -31,7 +30,6 @@ class PropertyFilter
             default:
                 $query->latest();
         }
-
         return $query;
     }
 }

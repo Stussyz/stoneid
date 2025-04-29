@@ -61,7 +61,7 @@
                     <div class="row gx-2 p-1 mt-3 justify-content-center border rounded">
                         <div class="col-xl-5 col-lg-5 col-md-12 position-relative">
                             <a href="">
-                                <img src="{{ asset('storage/images/users/' . $listing->photo ) }}" class="img-thumbnail shadow-box img-fluid">
+                                <img src="{{ asset('storage/images/listing_request/' . $listing->photo ) }}" class="img-thumbnail shadow-box img-fluid">
                             </a>
                             <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">
                                 {{ $listing->transaction_type }}
@@ -76,8 +76,8 @@
                                 <div class="col-md-4 justify-content-end d-flex">
                                     <div class="row nav nav-pills share-button">
                                         <div class="col-md-5 ps-2">
-                                            <button type="button" class="btn btn-outline-primary" href=""
-                                            data-bs-toggle="modal" data-bs-target="#deleteReqListingModal"><i class="fas fa-trash float-start py-1" aria-hidden="true"></i></button>
+                                            <button type="button" class="btn btn-outline-primary"
+                                            data-bs-toggle="modal" data-bs-target="#deleteReqListingModal{{ $listing->id }}"><i class="fas fa-trash float-start py-1" aria-hidden="true"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -89,13 +89,44 @@
                                 <a href="" target="_blank" rel="noopener noreferrer"><h5 class="card-title pb-2 text-black mb-0 fw-bold">
                                     {{ $listing->property_title }}
                                 </h5></a>
-                                <span class="mb-2"> <i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $listing->address}}</span>
+                                <span class="mb-2"> <i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $listing->address->city . ', '. $listing->address->province}}</span>
                                
-                                <small class="mb-2">{{ $listing->description}}</small>
+                                <small class="mb-2">{{Str::limit($listing->description, 140, '...') }}</small>
                                 <div class="text-end">
+                                    
                                      <h5><span class="badge bg-warning">{{ $listing->status}}</span></h5>
                                 </div>
                                
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Modal Delete-->
+                    <div class="modal fade" id="deleteReqListingModal{{ $listing->id }}" tabindex="-1" aria-labelledby="deleteReqListingModal" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteReqListingModalLabel">Hapus Request Iklan?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <div class="row d-flex flex-column justify-content-center align-items-center">
+                                        <i class="fas fa-exclamation-circle fa-4x text-warning my-2"></i>
+                                        <h3 class="text-warning mb-3">Apakah anda yakin?</h3>
+                                        <p>Anda akan menghapus request ini dan tidak bisa diulang.</p>
+                                    </div>
+                                
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                    <form action="{{ route('listing_requests.destroy', $listing->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-primary">Hapus</button>
+                                    </form>
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -114,26 +145,3 @@
     </section>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="deleteReqListingModal" tabindex="-1" aria-labelledby="deleteReqListingModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteReqListingModalLabel">Hapus Request Iklan?</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <div class="row d-flex flex-column justify-content-center align-items-center">
-                    <i class="fas fa-exclamation-circle fa-4x text-warning my-2"></i>
-                    <h3 class="text-warning mb-3">Apakah anda yakin?</h3>
-                    <p>Anda akan menghapus request ini dan tidak bisa diulang.</p>
-                </div>
-               
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Hapus</button>
-            </div>
-        </div>
-    </div>
-</div>

@@ -19,8 +19,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    @stack('stone-styles')  
+    
     <!-- Libraries Stylesheet -->
+
+
     @vite([
     // 'resources/libs/wow/wow.min.js', 
     'resources/libs/owlcarousel/assets/owl.carousel.min.css', 
@@ -32,3 +34,5 @@
     'resources/css/stone/style.css',
     'resources/js/stone/main.js'
     ])
+
+@stack('stone-styles') 

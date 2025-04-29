@@ -15,7 +15,7 @@
                         <form method="post" action="{{ route('stone.request-listing') }}" enctype="multipart/form-data">
                             @csrf
 
-                            <input type="hidden" name="listing_request_id" value="" class="form-control">
+                            {{-- <input type="hidden" name="listing_request_id" value="" class="form-control"> --}}
 
                             <h5 class="my-4">Data Pribadi</h5>
                             <div class="mb-3">
@@ -43,27 +43,7 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                             </div>
-                            <div class="mb-3">
-                                <label for="inputEmail" class="form-label">Domisili</label>
-                                <select class="form-select" name="address" aria-label="Default select" name="address">
-                                    <option selected value="{{ $profile->address; }}">{{ $profile->address; }}</option>
-                                    <option value="Malang">Malang</option>
-                                    <option value="Jakarta">Jakarta</option>
-                                    <option value="Surabaya">Surabaya</option>
-                                    <option value="Semarang">Semarang</option>
-                                    <option value="Medan">Medan</option>
-                                    <option value="Yogyakarta">Yogyakarta</option>
-                                    <option value="Bali">Bali</option>
-                                    <option value="Lampung">Lampung</option>
-                                    <option value="Malang">Banjarmasin</option>
-                                </select>
-                                @error('address')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
                             <h5 class="my-4">Data Properti</h5>
-
-                            
                             <div class="mb-3">
                                 <label for="propertyTitle" class="form-label">Judul Properti</label>
                                 <input type="text" name="property_title" class="form-control" placeholder="Masukkan alamat properti anda..." id="propertyTitle">
@@ -86,31 +66,105 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label for="inputAlamat" class="form-label">Alamat</label>
-                                <input type="text" name="address" class="form-control" placeholder="Masukkan alamat properti anda..." id="inputAlamat">
-                                @error('location')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
+                            {{-- addresses --}}
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="alamat" class="form-label">Alamat <sup class="text-danger">*</sup> </label>
+                                        <input 
+                                        type="text" 
+                                        value="{{ old('address[street]') }}" name="address[street]" class="form-control" 
+                                        id="alamat" 
+                                        placeholder="Alamat properti anda">
+                                        @error('address[street]')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div> 
+                                    <div class="mb-3">
+                                        <label for="city" class="form-label">Kota / Kabupaten <sup class="text-danger">*</sup> </label>
+                                        <select 
+                                        id="kota" 
+                                        class="form-select" 
+                                        value="{{ old('address[city]') }}" 
+                                        name="address[city]" 
+                                        aria-label="Default select example"
+                                        placeholder="Kota/Kabupaten" 
+                                        disabled>
+                                            <option selected value="Kota">Kota</option>
+                                        </select>
+                                        @error('address[city]')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                        
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="kelurahan" class="form-label">Kelurahan <sup class="text-danger">*</sup> </label>
+                                        <select 
+                                        class="form-select" 
+                                        value="{{ old('address[village]') }}" 
+                                        name="address[village]" 
+                                        id="kelurahan" 
+                                        aria-label="Default select example"
+                                        placeholder="Keurahan" 
+                                        disabled >
+                                            <option selected value="Kelurahan">Kelurahan</option>
+                                        </select>
+                                        @error('address[village]')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="provinsi" class="form-label">Provinsi <sup class="text-danger">*</sup> </label>
+                                        <select 
+                                        class="form-select" 
+                                        value="{{ old('address[province]', $property->address->province ?? '') }}" 
+                                        name="address[province]" 
+                                        id="provinsi"
+                                        placeholder="Provinsi" 
+                                        aria-label="Default select example" >
+                                            <option selected value="Provinsi">Provinsi</option>
+                                        </select>
+                                        @error('address[province]')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="kecamatan" class="form-label">Kecamatan <sup class="text-danger">*</sup> </label>
+                                        <select 
+                                        class="form-select" 
+                                        value="{{ old('address[district]') }}" 
+                                        name="address[district]" 
+                                        id="kecamatan" 
+                                        placeholder="Kecamatan"
+                                        aria-label="Default select example" 
+                                        disabled>
+                                            <option selected value="Kecamatan">Kecamatan</option>
+                                        </select>
+                                        @error('address[district]')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="inputPostalCode" class="form-label">Kode Pos</label>
+                                        <input 
+                                        type="number" 
+                                        value="{{ old('address[postal_code]') }}" 
+                                        name="address[postal_code]" 
+                                        class="form-control" 
+                                        maxlength="6" 
+                                        id="inputPostalCode" 
+                                        placeholder="Isikan Kode pos properti">
+                                        @error('address[postal_code]')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="inputLocation" class="form-label">Domisili Properti</label>
-                                <select id="inputLocation" class="form-select" name="listing_location" aria-label="Default select" name="address">
-                                    <option selected value="{{ $profile->address; }}">{{ $profile->address; }}</option>
-                                    <option value="Malang">Malang</option>
-                                    <option value="Jakarta">Jakarta</option>
-                                    <option value="Surabaya">Surabaya</option>
-                                    <option value="Semarang">Semarang</option>
-                                    <option value="Medan">Medan</option>
-                                    <option value="Yogyakarta">Yogyakarta</option>
-                                    <option value="Bali">Bali</option>
-                                    <option value="Lampung">Lampung</option>
-                                    <option value="Malang">Banjarmasin</option>
-                                </select>
-                                @error('listing_location')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
+                            
                             <div class="mb-3">
                                 <label for="inputSpec" class="form-label">Spesifikasi Properti (singkat)</label>
                                 <textarea class="form-control" name="description" id="inputSpec" rows="3" placeholder="Contoh: Rumah lantai 2, luas 300m2 dsb"></textarea>
@@ -150,7 +204,7 @@
                                 border-style:dashed;
                                 height: 250px;">
                                     <!-- Profile Image Preview -->
-                                    <img id="preview-photo" src="{{ asset('storage/images/users/image-default.png') }}" 
+                                    <img id="preview-photo" src="{{ asset('storage/images/listing_request/image-default.png') }}" 
                                         alt="Put image here" 
                                         class="rounded-3 mb-2" 
                                         style="width: 200px; height: 150px; object-fit: cover; display: block;">

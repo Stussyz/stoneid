@@ -23,8 +23,8 @@ export default defineConfig({
                 'resources/css/stone/style.css',
                 'resources/css/app.css',
                 'resources/sass/app.scss',
-                'resources/css/stone/property-enhancer',
-                'resources/cs/stone/user-profile-enhancer.css',
+                'resources/css/stone/property-enhancer.css',
+                'resources/css/stone/user-profile-enhancer.css',
 
                 //js
                 'resources/js/stone/image-carousel-gallery.js',

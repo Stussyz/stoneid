@@ -50,6 +50,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/user/forgot-password', fn() => view('auth.forgot-password'))->name('user.forgot-password');
     Route::get('/user/reset-password', fn() => view('auth.reset-password'))->name('user.reset-password');
     Route::get('/agent/register', [AgentRegisterController::class, 'index'])->name('agent.register');
+
 });
 
 //manual guard by auth checking in controller
@@ -61,6 +62,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::post('/property/{property}/favorite', [PublicListingController::class, 'toggleFavorite'])->name('stone.property.favorite');
     Route::delete('/user/favorite/{property}/remove', [PublicListingController::class, 'removeFavorite'])->name('stone.remove-favorite');
+
+    Route::delete('/listing-requests/{id}/delete', [ListingRequestController::class, 'destroy'])
+        ->name('listing_requests.destroy');
 });
 
 //agent dashboard
@@ -70,6 +74,7 @@ Route::middleware(['auth', 'role:agent'])
     ->group(function () {
         Route::get('/', [OverviewController::class, 'index'])->name('index');
         Route::get('/pool-user', [ListingRequestController::class, 'show'])->name('pool-user');
+        Route::post('/pool-user/accept', [ListingRequestController::class, 'accept'])->name('pool-user.accept');
         Route::post('/buat-iklan/82347342723443342',
             [AgentListingController::class, 'store'])->name('store-listing');
 

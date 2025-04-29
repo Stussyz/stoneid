@@ -34,12 +34,24 @@
                 <a href="{{ route('contact-us') }}" class="nav-item nav-link {{ Route::is('contact-us') ? 'active' : '' }}">Bantuan</a>
             </div>
 
-            @auth  
+             {{-- If login, then display the dropdown utilities, else, login button --}}
+            @auth   
             <div class="dropdown dropdown_profile">
                 <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{{ $profile_pic}}" alt="User" class="profile_pic rounded-circle me-2">
                     <small>Welcome!</small>
                 </button>
+
+                {{-- User notification counter  --}}
+                @role('user')
+                    @if (auth()->user()->unreadNotifications->count() > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ auth()->user()->unreadNotifications->count() }}
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    @endif
+                @endrole
+                {{-- end user notification counter --}}
               
                 <ul class="dropdown-menu dropdown-animated p-3 shadow rounded " aria-labelledby="dropdownMenuButton">
                     <div class="d-flex align-items-center mb-2">
@@ -56,15 +68,25 @@
                     <li><a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-profile') }}"><span><i class="bi bi-person me-2"></i>Lihat Profil</span></a></li>
 
                     <li><a class="dropdown-item d-flex justify-content-between" href="#"><span><i class="bi bi-gear me-2"></i>Settings</span></a></li>
-                    <li><a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-profile') }}#favoriteProp"><span><i class="bi bi-star me-2"></i>Properti Favorit</span>
-
-                    <span class="badge rounded-pill bg-danger d-flex align-items-center">
-                        99+
-                        <span class="visually-hidden">unread messages</span>
-                    </span></a>
+                    <li>
+                        <a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-profile') }}#favoriteProp"><span><i class="bi bi-star me-2"></i>Properti Favorit</span>
+                            <span class="badge rounded-pill bg-danger d-flex align-items-center">
+                                99+
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </a>
                     </li>
                     <hr>
-                    <li><a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-profile') }}#myListing"><span><i class="bi bi-list-ul me-2"></i>Iklan saya</span></a></li>
+                    <li>
+                        <a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-profile') }}#myListing"><span><i class="bi bi-list-ul me-2"></i>Iklan saya</span>
+                            @if (auth()->user()->unreadNotifications->count() > 0)
+                            <span class="badge rounded-pill bg-danger d-flex align-items-center">
+                                    {{ auth()->user()->unreadNotifications->count() }}
+                                    <span class="visually-hidden">unread messages</span>
+                            </span>
+                            @endif
+                        </a>
+                    </li>
                     <li><a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-profile') }}#lastSeen"><span><i class="bi bi-clock-history me-2"></i>Terakhir Dilihat</span></a></li>
                     <li><a class="dropdown-item d-flex justify-content-between" href="{{ route('stone.user-edit-profile') }}"><span><i class="bi bi-bi bi-pencil-square me-2"></i>Ubah Profil</span></a></li>
                     @elserole('agent') 
@@ -86,6 +108,8 @@
             @else
               <a href="{{ route('user.login') }}" class="btn btn-primary px-3 mb-3 mb-md-0 {{ Route::is('user.login') ? 'd-none' : '' }} ">Login</a>
             @endauth 
+
+            
         </div>
     </nav>
 </div>

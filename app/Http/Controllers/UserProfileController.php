@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Notifications\ListingRequestAccepted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +12,6 @@ class UserProfileController extends Controller
     {
 
         if ($redirect = $this->denyIfNotUser()) {
-            dd('anjing');
             return $redirect;
         }
 
@@ -21,6 +21,10 @@ class UserProfileController extends Controller
         ? $profile->favoriteProperties()->with('address', 'propertyImages')->latest()->get()
         : collect(); // empty if not logged in or no profile
 
+        //notification delete
+        auth()->user()->unreadNotifications()
+            ->where('type', ListingRequestAccepted::class)
+            ->update(['read_at' => now()]);
                                                                       // get a listing request from user
         $listingRequests = $user->listingRequests()->latest()->get(); // or ->paginate(10)
 

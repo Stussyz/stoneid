@@ -66,17 +66,34 @@ class AgentController extends Controller
      */
     public function update(Request $request)
     {
+
         $old_photo = $this->profile->photo;
 
-        $request->validate([
-            'name'          => 'required|string|max:255',
-            'email'         => 'required|email',
-            'phone'         => 'nullable|string|max:20',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'password'      => 'required|confirmed|min:8',
-            'bio'           => 'nullable',
+        $validated = $request->validate([
+            'name'                => 'required|string|max:255',
+            'email'               => 'required|email',
+            'phone'               => 'nullable|string|max:20',
+            'profile_photo'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'password'            => 'required|confirmed|min:8',
+            'bio'                 => 'nullable',
+
+            //address
+            'address.street'      => 'required|string|max:255',
+            'address.village'     => 'required|string|max:255',
+            'address.district'    => 'required|string|max:255',
+            'address.city'        => 'required|string|max:255',
+            'address.province'    => 'required|string|max:255',
+            'address.postal_code' => 'required|string|max:20',
         ]);
 
+        $this->profile->address()->updateOrCreate([
+            'street'      => $validated['address']['street'],
+            'village'     => $validated['address']['village'],
+            'district'    => $validated['address']['district'],
+            'city'        => $validated['address']['city'],
+            'province'    => $validated['address']['province'],
+            'postal_code' => $validated['address']['postal_code'],
+        ]);
         // Check if entered password matches the user's password
         if (! Hash::check($request->password, $this->user->password)) {
             return back()->withErrors(['password' => 'Password yang Anda masukkan salah.'])->withInput();

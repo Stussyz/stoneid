@@ -32,7 +32,7 @@
 
             <div class="row border rounded-3">
                 <div class="mt-3 p-3" id="nego">
-                    <h5 class="text-center mb-5">Proses Negosiasi</h5>
+                    <h5 class="text-center mb-5">Tanda Jadi Negosiasi</h5>
                     <form action="{{ route('dashboard-agent.transaction.process.save', [$property->id_preview, $step]) }}" method="post">
                         @csrf
                         <div class="row">

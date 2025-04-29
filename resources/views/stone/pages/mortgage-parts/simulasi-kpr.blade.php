@@ -1,4 +1,3 @@
-
 <!-- isi tab Simulasi KPR -->
 <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
     <section class="row mt-3 g-0">
